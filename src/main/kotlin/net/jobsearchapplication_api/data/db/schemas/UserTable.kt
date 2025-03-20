@@ -21,7 +21,7 @@ object UserTable : Table("users") {
     val cv_url = text("cv_url").nullable()
     val education = text("education").nullable()
     val experience = text("experience").nullable()
-    val createdAt = timestamp("created_at").defaultExpression(CurrentTimestamp())
+    var createdAt = timestamp("created_at").defaultExpression(CurrentTimestamp())
 
     override val primaryKey = PrimaryKey(id)
 }
