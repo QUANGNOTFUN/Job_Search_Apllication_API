@@ -45,18 +45,17 @@ class StoryServiceImpl : StoryService {
     override suspend fun getAllStories(page: Int, limit: Int): PaginatedResult<Story> {
         var pageCount: Long = 0
         var nextPage: Long? = null
-
         val stories = DatabaseFactory.dbQuery {
             StoryTable
                 .innerJoin(UserTable, { UserTable.id }, { StoryTable.userId })
-                .select {
-                    StoryTable.isDraft eq false
+                .selectAll() // Bỏ điều kiện isDraft eq false để lấy tất cả Story
+                .orderBy(StoryTable.createdAt, SortOrder.DESC)
+                .also {
+                    val totalStories = it.count()
+                    pageCount = (totalStories + limit - 1) / limit // Sửa cách tính pageCount
+                    if (page < pageCount) nextPage = page + 1L
                 }
-                .orderBy(StoryTable.createdAt, SortOrder.DESC).also {
-                    pageCount = it.count() / limit
-                    if (page < pageCount)
-                        nextPage = page + 1L
-                }.limit(limit, (limit * page).toLong())
+                .limit(limit, (limit * page).toLong())
                 .mapNotNull { it.toStoryJoinedWithUser() }
         }
         return PaginatedResult(pageCount, nextPage, stories)

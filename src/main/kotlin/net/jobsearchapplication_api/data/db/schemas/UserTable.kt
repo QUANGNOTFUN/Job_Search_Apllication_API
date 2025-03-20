@@ -1,5 +1,6 @@
 package net.jobsearchapplication_api.data.db.schemas
 
+import net.jobsearchapplication_api.data.db.schemas.UserTable.nullable
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.CurrentTimestamp
@@ -13,7 +14,7 @@ object UserTable : Table("users") {
     val fullName = varchar("full_name", 50)
     val email = varchar("email", 100)
     val password_hash = text("password_hash")
-    val phone_number = varchar("phone_number", 20)
+    val phone_number = varchar("phone_number", 20).nullable()
     val avatar = text("avatar").nullable()
     val bio = varchar("bio", 250).nullable()
     val location = varchar("location", 255).nullable()
